@@ -98,7 +98,7 @@ A modern Go REST API for managing books with distributed storage, full-text sear
 ### 1. Clone and Setup
 
 ```bash
-cd c:\Users\pearl\lab\go-elastic
+cd c:\Users\YOUR DIRECTORY
 cp .env.example .env
 ```
 
