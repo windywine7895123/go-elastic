@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Test</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f8; display: flex; justify-content: center; padding-top: 50px; }
+        .container { width: 600px; }
+        
+        /* Search Box Styling */
+        .search-box { position: relative; width: 100%; }
+        input {
+            width: 100%; padding: 15px 20px; font-size: 18px;
+            border: 2px solid #ddd; border-radius: 30px; outline: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: all 0.3s;
+            box-sizing: border-box; /* สำคัญ */
+        }
+        input:focus { border-color: #007bff; box-shadow: 0 4px 12px rgba(0,123,255,0.2); }
+
+        /* Status Indicator */
+        .status { margin-top: 10px; font-size: 14px; color: #888; text-align: right; min-height: 20px; }
+
+        /* Results List */
+        #results { margin-top: 20px; }
+        .card {
+            background: white; padding: 20px; margin-bottom: 15px;
+            border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s; cursor: pointer;
+        }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .card h3 { margin: 0 0 5px 0; color: #333; font-size: 18px; }
+        .card p { margin: 0; color: #666; font-size: 14px; }
+        .highlight { color: #007bff; font-weight: bold; }
+        .badge { display: inline-block; background: #e3f2fd; color: #0d47a1; padding: 3px 8px; border-radius: 4px; font-size: 12px; margin-bottom: 5px;}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 style="text-align: center; color: #333;">📚 Elasticsearch Book Search</h2>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Type to search books (e.g. Martin, Clean Code)...">
+        </div>
+        <div class="status" id="statusText">Ready</div>
+
+        <div id="results">
+            </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:8080/api/books/search?type=title&q="; 
+
+        const input = document.getElementById('searchInput');
+        const resultsDiv = document.getElementById('results');
+        const statusText = document.getElementById('statusText');
+
+        let debounceTimer;
+        let abortController; // fix Race Condition
+
+        // --- CORE LOGIC ---
+        input.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+
+            // 1. Reset debouce timer
+            clearTimeout(debounceTimer);
+
+            if (query.length === 0) {
+                resultsDiv.innerHTML = '';
+                statusText.innerText = 'Ready';
+                return;
+            }
+
+            // 2. set Debouce
+            statusText.innerText = 'Typing...';
+            debounceTimer = setTimeout(() => {
+                performSearch(query);
+            }, 300);
+        });
+
+        async function performSearch(query) {
+            // 3. Abort Previous Request
+            if (abortController) {
+                abortController.abort();
+            }
+            abortController = new AbortController(); //nee abort controller
+
+            statusText.innerText = 'Searching...';
+
+            try {
+                // api calling
+                const response = await fetch(API_URL + encodeURIComponent(query), {
+                    signal: abortController.signal // binding signal
+                });
+
+                if (!response.ok) throw new Error("API Error");
+
+                const books = await response.json();
+                renderResults(books);
+                statusText.innerText = `Found ${books ? books.length : 0} results`;
+
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    console.log('Request cancelled (User typed new char)');
+                } else {
+                    console.error('Error:', error);
+                    statusText.innerText = 'Error fetching data';
+                }
+            }
+        }
+
+        function renderResults(books) {
+            resultsDiv.innerHTML = '';
+            if (!books || books.length === 0) {
+                resultsDiv.innerHTML = '<div style="text-align:center; color:#999;">No books found</div>';
+                return;
+            }
+
+            // Render HTML
+            books.forEach(book => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <span class="badge">${book.language || 'EN'}</span>
+                    <h3>${book.title}</h3>
+                    <p>✍️ <strong>Author:</strong> ${book.author}</p>
+                    <p>📖 <strong>Publisher:</strong> ${book.publisher} | 📄 ${book.pages} pages</p>
+                    <p style="margin-top:5px; font-style:italic; font-size:12px; color:#999;">ISBN: ${book.isbn}</p>
+                `;
+                resultsDiv.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+# Go
+*.go~
+*.exe
+*.exe~
+*.dll
+*.so
+*.so.*
+*.dylib
+*.test
+*.out
+/bin/
+/dist/
+
+# Go modules
+go.sum
+vendor/
+
+# Build artifacts
+/tmp/
+*.o
+*.a
+
+# Test coverage
+*.coverprofile
+coverage.txt
+coverage.html
+*.cov
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+*.project
+.classpath
+*.c9/
+*.iml
+*.iws
+*.ipr
+*.swc
+*.jshintrc
+.EditorConfig
+.prettierignore
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.production.local
+
+# IDE specific
+.vscode
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+.AppleDouble
+.LSOverride
+*.log
+*.pot
+*.mo
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+.~*
+
+# Node (if used for frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python (if used for scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Docker
+.docker/
+docker-compose.override.yaml
+.dockerignore
+
+# Local testing
+mock_books.json~
+api.http.bak
+
+# Air - Live reload
+tmp/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Elasticsearch
+.elasticsearch/
+elasticsearch-data/
+
+# MongoDB
+mongodb-data/
+mongo-data/
+
+# Jaeger
+jaeger-data/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Private files
+private/
+secrets/
+.env.secret
+
+# macOS
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+
+# Generated files
+*.generated.go
+mock_*.go
+
+# Backup files
+*.backup
+*.bkp
+*.bak
+
+# Vim swap files
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+*~
+.vim/
+
+# Distribution
+release/
+dist/
+build/
